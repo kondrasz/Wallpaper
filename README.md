@@ -63,3 +63,4 @@ git clone [https://github.com/seu-usuario/nome-do-repositorio.git](https://githu
 ----
 ### IMPORTANTEEEEEEEE
 Outra coisa, vc roda o codigo abre no navegador e NAO TIRA PRINTTTTT, vc clica em algum botão ai no seu computador que vc exporta a pagina como PDF, ai vc baixa o pdf e converte para png,jpeg ou seu formato de arquivo favorito
+Iriei aqui explicar o PORQUE vc nao pode tirar print: qualidade muito ruim, fica horrível como wallpaper
