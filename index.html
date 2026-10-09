@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, initial-scale=1">
+    <title>Wallpaper Arthur</title>
+    <style>
+        
+        @font-face { 
+            font-family: 'VT323'; 
+            src: url('VT323-Regular.ttf'); 
+        } 
+        
+        body {
+    margin: 0;
+    background-color: #030000; 
+    font-family: 'VT323', monospace;
+    color: #B2040B;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    position: relative;
+} /* Fechamos o body aqui */
+
+/* Agora criamos o efeito separado */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    /* Esse gradiente cria as linhas horizontais e o ruído de cor (RGB) */
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    z-index: 1000; /* Garante que as linhas fiquem por cima de todas as janelas */
+}
+        
+
+        /* AJUSTE 1: Z-INDEX NA CAMADA PAI */
+        .desktop { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 1; 
+        }
+
+        /* AJUSTE 2: VINHETA NO FUNDO (Z-INDEX BAIXO) */
+        .desktop::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+            z-index: 2; /* Garante que o efeito fique atrás de todas as janelas */
+        }
+
+        .window {
+            position: absolute;
+            border: 2px solid #B2040B;
+            background: #0a0000;
+            box-shadow: 6px 6px 0px #400000;
+            outline: 2px solid #000;
+            z-index: 10;
+        }
+
+.window-controls {
+    display: flex;
+    font-family: monospace; /* Garante que o X e o _ fiquem quadradinhos */
+}
+        .title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #B2040B;
+            color: #000;
+            padding: 2px 8px;
+            font-weight: bold;
+            font-size: 20px;
+            height: 28px;
+        }
+
+        .close-button {
+            background: #000; color: #B2040B;
+            width: 20px; height: 20px;
+            display: flex; justify-content: center; align-items: center;
+            border: 1px solid #000; font-size: 16px; cursor: pointer;
+        }
+
+        .window-content { padding: 15px; line-height: 1.5; }
+
+        .progress-bar { width: 100%; height: 8px; border: 1px solid #B2040B; margin: 10px 0; background: #1a0000; }
+        .progress-fill { width: 65%; height: 100%; background: #B2040B; box-shadow: 0 0 8px #B2040B; }
+        .player-controls { display: flex; justify-content: space-around; margin-top: 10px; font-size: 18px; }
+
+        .player-layout {
+            display: flex;
+            gap: 15px;
+            padding: 10px;
+            align-items: center;
+        }
+
+        .album-cover {
+            width: 90px;
+            height: 90px;
+            flex-shrink: 0;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .album-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            display: block;
+            filter: contrast(1.4) brightness(1.1);
+        }
+
+        .track-info {
+            flex-grow: 1;
+            font-size: 20px;
+            line-height: 1.3;
+        }
+
+        /* AJUSTE 3: O CONTAINER DO SEU AVATAR (Z-INDEX ALTO) */
+        .user-auth-window {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 120px;
+            border: 2px solid #B2040B;
+            background: #0a0000;
+            box-shadow: 4px 4px 0px #400000;
+            outline: 2px solid #000;
+            z-index: 100; /* Fica na frente de tudo */
+        }
+
+        .auth-title {
+            background: #B2040B;
+            color: #000;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            padding: 2px 0;
+            text-transform: uppercase;
+        }
+
+        .auth-content {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .avatar-border {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #440000;
+            background: #000;
+            margin: 0 auto 8px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .avatar-border img {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            -webkit-optimize-contrast: pixelated;
+            object-fit: contain;
+        }
+
+        .auth-status {
+            font-size: 14px;
+            color: #B2040B;
+        }
+/* SIDEBAR DE HACKING - LYRICS SOAD */
+.lyric-block {
+    position: absolute;
+    top: 30px;
+    right: 350px;
+    width: 420px;
+    color: #B2040B;
+    opacity: 0.6; /* Deixa o texto sutil no fundo */
+    font-size: 18px;
+    line-height: 1.2;
+    z-index: 5; /* Atrás das janelas principais */
+    pointer-events: none; /* Garante que não atrapalhe cliques */
+}
+
+
+.command-line {
+    margin-bottom: 20px;
+    font-family: 'VT323', monospace;
+}
+
+.system-tag {
+    font-size: 10px;
+    color: #fff;
+    opacity: 0.5;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.lyric-line {
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.lyric-header {
+    font-weight: bold;
+    border-bottom: 1px solid #B2040B;
+    margin-bottom: 10px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+/* CONTAINER DO PÔSTER CYBERPUNK */
+.cyberpunk-poster-window {
+    position: absolute;
+    top: 210px; /* Abaixo do User ID e alinhado com o Player */
+    right: 80px;
+    width: 240px; /* Largura compacta para um pôster vertical */
+    border: 2px solid #B2040B;
+    background: #0a0000;
+    outline: 2px solid #000;
+    box-shadow: 0 0 25px rgba(178, 4, 11, 0.3);
+    z-index: 15; /* Camada intermediária */
+}
+
+.poster-header {
+    background: #B2040B;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 10px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+}
+
+.poster-content {
+    padding: 10px;
+}
+
+/* Moldura interna e estilização da imagem */
+.poster-frame {
+    width: 100%;
+    height: 320px; /* Altura vertical para o pôster */
+    border: 1px solid #440000;
+    background: #000;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.poster-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+    display: block;
+    
+    /* Filtro para combinar com o tema vermelho neon */
+    filter: sepia(1) hue-rotate(-50deg) saturate(3) contrast(1.2);
+    opacity: 0.9;
+}
+
+/* Efeito sutil de scanline sobre a imagem */
+.poster-frame::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(178, 4, 11, 0.1) 1px, transparent 1px);
+    background-size: 100% 3px;
+    pointer-events: none;
+}
+
+.poster-metadata {
+    font-size: 12px;
+    color: #B2040B;
+    border-top: 1px solid #440000;
+    padding-top: 5px;
+    line-height: 1.3;
+}
+
+.metadata-line { margin: 2px 0; }
+.metadata-line span { color: #fff; }
+/* CONTENTOR DA GALERIA RENOIR */
+.renoir-archive {
+    position: absolute;
+    top: 250px;   /* Posicionado abaixo da janela de Status */
+    left: 200px;
+    width: 200px;
+    border: 2px solid #B2040B;
+    background: #0a0000;
+    outline: 2px solid #000;
+    box-shadow: 6px 6px 0px #400000;
+    z-index: 12;
+}
+
+.renoir-header {
+    background: #B2040B;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 8px;
+    text-transform: uppercase;
+}
+
+.renoir-content {
+    padding: 10px;
+    text-align: center;
+}
+
+/* Moldura para a foto do Renoir */
+.renoir-frame {
+    width: 100%;
+    height: 180px;
+    border: 1px solid #440000;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: #111;
+}
+
+.renoir-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Filtro para dar um ar de ficheiro antigo e digitalizado */
+    filter: grayscale(1) contrast(1.2) sepia(0.5);
+    opacity: 0.8;
+}
+
+.renoir-quote {
+    font-style: italic;
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.2;
+    margin-top: 5px;
+    border-top: 1px solid #440000;
+    padding-top: 8px;
+}
+
+.renoir-author {
+    font-size: 12px;
+    color: #B2040B;
+    margin-top: 5px;
+    text-align: right;
+}
+/* JANELA GRANDE DA TORRE ARASAKA */
+.arasaka-popup {
+    position: absolute;
+    top: 120px;
+    left: 450px; /* Posicionada mais ao centro para preencher o vazio */
+    width: 500px; /* Janela grande para destaque */
+    border: 2px solid #B2040B;
+    background: #0a0000;
+    box-shadow: 10px 10px 0px #400000;
+    outline: 2px solid #000;
+    z-index: 8; /* Fica atrás das janelas menores (Status/Player), mas na frente do fundo */
+}
+
+.arasaka-header {
+    background: #B2040B;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 4px 12px;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+}
+
+.arasaka-content {
+    padding: 15px;
+    position: relative;
+}
+
+/* Moldura da Imagem Pixel Art */
+.arasaka-frame {
+    width: 100%;
+    height: 600px; /* Altura grande para a torre */
+    border: 1px solid #440000;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+}
+
+.arasaka-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* GARANTE O PIXEL NÍTIDO NO SAFARI/EDGE */
+    image-rendering: pixelated;
+    -webkit-optimize-contrast: pixelated;
+    opacity: 0.9;
+    filter: contrast(1.2) brightness(0.8) sepia(0.3) hue-rotate(-50deg);
+}
+
+
+
+
+.arasaka-footer {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #B2040B;
+    border-top: 1px solid #440000;
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+/* JANELA DE ALERTA DO SEVEN (DEADLOCK) */
+.seven-alert-window {
+    position: absolute;
+    top: 550px; /* Posicionado para preencher a parte inferior central */
+    left: 480px; 
+    width: 280px;
+    border: 2px solid #B2040B;
+    background: #0a0000;
+    box-shadow: 0 0 20px #ff0000; /* Brilho de energia */
+    outline: 2px solid #000;
+    z-index: 25; /* Fica na frente da Torre Arasaka */
+}
+
+.alert-header {
+    background: #B2040B;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 3px 10px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.alert-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.seven-icon {
+    font-size: 30px;
+    margin-bottom: 10px;
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+}
+
+.warning-text {
+    font-size: 22px;
+    color: #fff;
+    line-height: 1.1;
+    margin: 10px 0;
+    text-transform: uppercase;
+}
+
+.static-voltage {
+    font-size: 12px;
+    color: #B2040B;
+    border-top: 1px solid #440000;
+    padding-top: 8px;
+    margin-top: 10px;
+}
+/* JANELA DO SEVEN - DEADLOCK */
+/* JANELA DO SEVEN - VERSÃO CLEAN */
+.seven-data-window {
+    position: absolute;
+    bottom: 60px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 480px;
+    border: 2px solid #B2040B;
+    background: #0a0000;
+    outline: 2px solid #000;
+    z-index: 30;
+}
+
+.seven-image-box {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    border-bottom: 1px solid #440000;
+}
+
+.seven-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.5) contrast(1.1); /* Menos saturado, mais sério */
+}
+
+/* Frase como uma linha de log, não como overlay gigante */
+.seven-command-line {
+    padding: 12px;
+    background: #000;
+    color: #fff;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #440000;
+}
+
+.seven-tech-footer {
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #B2040B;
+    opacity: 0.8;
+}
+
+.seven-banner {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid #B2040B;
+}
+
+.seven-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated; /* Mantém o estilo se for pixel art */
+    filter: brightness(0.8) contrast(1.2);
+}
+
+
+.seven-footer {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #B2040B;
+}
+.frase-block {
+    position: absolute;
+    top: 570px;
+    left: 50px;
+    width: 300px;
+    color: #B2040B;
+    opacity: 0.6; /* Deixa o texto sutil no fundo */
+    font-size: 18px;
+    line-height: 1.2;
+    z-index: 5; /* Atrás das janelas principais */
+    pointer-events: none; /* Garante que não atrapalhe cliques */
+}
+
+.frase-line {
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.frase-header {
+    font-weight: bold;
+    border-bottom: 1px solid #B2040B;
+    margin-bottom: 10px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+.laufey-code-player {
+    position: absolute;
+    bottom: 50px; 
+    left: 80px;   
+    width: 250px;
+    border: 2px solid #B2040B;
+    background: #0a0000;
+    outline: 2px solid #000;
+    box-shadow: 0 0 15px rgba(178, 4, 11, 0.3);
+    z-index: 20;
+}
+
+.window-header {
+    background: #B2040B;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+}
+
+.turntable-frame {
+    width: 100%;
+    height: 180px;
+    position: relative;
+    border-bottom: 1px solid #440000;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Toca-discos em CSS Puro */
+.turntable-code-base {
+    width: 160px;
+    height: 150px;
+    background: #111;
+    border: 2px solid #333;
+    border-radius: 4px;
+    position: relative;
+}
+
+.platter {
+    position: absolute;
+    top: 50%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    width: 110px;
+    height: 110px;
+    background: #000;
+    border: 2px solid #333;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* O Disco em formato de Coração */
+/* AJUSTE PARA O DISCO EM CORAÇÃO FICAR MAIS VISÍVEL */
+.heart-vinyl {
+    /* 1. Aumentei o tamanho (de 85px para 95px) */
+    width: 95px; 
+    height: 95px;
+    
+    /* 2. MUDEI A COR PARA VERMELHO NEON (Mais visível que preto) */
+    background: #9F0725; 
+    
+    /* 3. ADICIONEI UM CONTORNO PRETO NÍTIDO para definir o formato */
+    box-shadow: 0 0 0 2px #000, 0 0 10px rgba(178, 4, 11, 0.5);
+    
+    /* Mantive o clip-path original que desenha o coração */
+    clip-path: path('M47.5 20 C35 0 0 6 0 32 C0 58 47.5 90 47.5 90 C47.5 90 95 58 95 32 C95 6 60 0 47.5 20 Z');
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 5; /* Garante que fique por cima do prato */
+}
+
+/* Ajuste do Rótulo Central para acompanhar o novo tamanho */
+.heart-vinyl::after {
+    content: "";
+    width: 25px; /* Aumentei o rótulo central */
+    height: 25px;
+    background: #0a0000; /* Preto profundo para o centro */
+    border-radius: 50%;
+    border: 2px solid #000;
+}
+
+.tonearm {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 100px;
+    background: #333;
+    border: 1px solid #000;
+}
+
+.laufey-info {
+    padding: 10px;
+    text-align: center;
+    color: #fff;
+}
+/* 1. GARANTIR A FONTE JAPONESA */
+@font-face {
+    font-family: 'DotGothic';
+    src: url('DotGothic16-Regular.ttf');
+}
+
+/* LOG DE FUNDO EM JAPONÊS (DOT MATRIX STYLE) */
+.jp-background-log {
+    position: absolute;
+    bottom: 60px; /* Alinhado com a altura da Laufey */
+    left: 350px;  /* Colocado logo à direita do player (que tem 250px de largura) */
+    width: 300px;
+    font-family: 'DotGothic', sans-serif;
+    color: #B2040B;
+    opacity: 0.5;
+    font-size: 14px;
+    line-height: 1.2;
+    z-index: 5; /* Atrás das janelas, mas à frente do fundo */
+    pointer-events: none;
+    white-space: pre;
+}
+
+.jp-log-line {
+    margin-bottom: 4px;
+}
+/* JANELA DE MONITORAMENTO NEURAL (LADO DIREITO) */
+.neural-monitor {
+    position: absolute;
+    top: 150px;
+    right: 60px;
+    width: 350px;
+    border: 1px solid #B2040B;
+    background: rgba(5, 0, 0, 0.9);
+    font-family: 'VT323', monospace;
+    z-index: 15;
+}
+
+.neural-header {
+    background: #B2040B;
+    color: #000;
+    padding: 2px 8px;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+.neural-content {
+    padding: 15px;
+    color: #B2040B;
+}
+
+/* Efeito de Log de Comandos (O texto da direita na sua imagem) */
+.command-log {
+    font-size: 14px;
+    line-height: 1.3;
+    margin-bottom: 15px;
+    border-left: 2px solid #440000;
+    padding-left: 10px;
+}
+
+.command-line { margin-bottom: 8px; }
+.command-prompt { color: #fff; margin-right: 5px; }
+
+/* Bloco de Identidade (A parte de baixo da imagem) */
+.identity-box {
+    border: 1px dashed #B2040B;
+    padding: 10px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.identity-header {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: #050000;
+    padding: 0 5px;
+    font-size: 12px;
+}
+
+.identity-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+/* Efeito de Moldura Técnica (Cantos da imagem) */
+.tech-corner {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border: 2px solid #B2040B;
+}
+.top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+/* CONTAINER PROCURADO: JOHNNY SILVERHAND (NA FRENTE DE TUDO) */
+/* CONTAINER PROCURADO: JOHNNY SILVERHAND (NA FRENTE DE TUDO) */
+.johnny-wanted-box {
+    position: absolute;
+    top: 100px; /* Posicionado abaixo do pôster do Seven Cyberpunk */
+    right: 400px;
+    width: 280px;
+    border: 3px double #B2040B;
+    background: rgba(10, 0, 0, 0.95);
+    font-family: 'VT323', monospace;
+    color: #fff;
+    outline: 2px solid #000;
+    box-shadow: 0 0 20px rgba(178, 4, 11, 0.5);
+    /* O SEGREDO: z-index maior que todos os outros (que são 100 ou menos) */
+    z-index: 999 !important; 
+}
+
+.wanted-header {
+    background: repeating-linear-gradient(45deg, #B2040B, #B2040B 10px, #0a0000 10px, #0a0000 20px);
+    height: 15px;
+    border-bottom: 2px solid #000;
+}
+
+.wanted-title {
+    background: #B2040B;
+    color: #000;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding: 2px;
+    text-transform: uppercase;
+}
+
+.johnny-frame {
+    width: 100%;
+    height: 200px;
+    background: #000;
+    border: 1px solid #440000;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.johnny-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* PREENCHIMENTO TOTAL */
+    filter: brightness(0.8) contrast(1.2) sepia(0.1);
+    image-rendering: pixelated; 
+}
+
+.label-red { color: #B2040B; }
+/* CONTAINER PROCURADO: JOHNNY SILVERHAND (TAREFA PRIORITÁRIA) */
+
+/* JANELA DO VISUALIZADOR TÁTICO */
+
+
+.skull-window {
+    position: absolute;
+    top: 200px; /* Mantém a posição original */
+    right: 650px;
+    width: 380px; /* Largura ideal para um pop-up de imagem */
+    border: 1px solid #B2040B; /* Borda vermelha do tema AMACDOG_OS */
+    background: #0a0000;
+    font-family: 'VT323', monospace;
+    z-index: 14; /* Mantém a profundidade de janelas sobrepostas */
+}
+
+.skull-header {
+    background: #B2040B;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+}
+
+.skull-content {
+    padding: 10px;
+    background: #000;
+    border-bottom: 1px solid #440000;
+    height: 380px; /* Altura fixa para a janela de visualização */
+    display: flex; /* Centraliza a imagem no box */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* A CLASSE DA IMAGEM REAL */
+.tactical-image {
+    width: 100%;
+    height: 100%;
+    /* AJUSTE CHAVE: contain garante que a imagem apareça INTEIRA */
+    object-fit: contain; 
+    
+    /* Efeito de processamento tático sutil */
+    filter: brightness(0.9) contrast(1.1) sepia(0.1);
+    
+    /* Mantém o pixel nítido se a imagem for pequena */
+    image-rendering: pixelated; 
+}
+/* Carregando a sua fonte dot matrix */
+@font-face {
+    font-family: 'DotGothic';
+    src: url('DotGothic16-Regular.ttf') format('truetype');
+}
+
+.sushi-menu-window {
+    position: absolute;
+    top: 500px;
+    left: 605px;
+    width: 270px; /* Aumentado de 220px para 320px */
+    background: rgba(5, 0, 0, 0.95);
+    border: 2px solid #B2040B;
+    font-family: 'DotGothic', 'VT323' ,sans-serif; /* Usando sua nova fonte */
+    z-index: 50;
+    box-shadow: 0 0 20px rgba(178, 4, 11, 0.4);
+}
+
+.sushi-header {
+    background: #B2040B;
+    color: #000;
+    padding: 5px 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px; /* Header maior */
+}
+
+.sushi-content {
+    padding: 20px; /* Mais respiro interno */
+}
+
+.sushi-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #440000;
+    padding-bottom: 5px;
+}
+
+.sushi-name {
+    color: #fff;
+    font-size: 13px; /* Nomes maiores */
+    letter-spacing: 1px;
+}
+
+.sushi-jp {
+    font-size: 12px; /* Ideogramas mais visíveis */
+    color: #B2040B;
+    display: block;
+    margin-top: 2px;
+    font-family: 'DotGothic',sans-serif;
+}
+
+.sushi-price {
+    color: #B2040B;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+    <div class="desktop">
+        <div class="johnny-wanted-box">
+    <div class="wanted-header"></div>
+    <div class="wanted-title">WANTED // ELIMINATE</div>
+    
+    <div class="wanted-content" style="padding: 15px;">
+        <div class="johnny-frame">
+            <span style="position: absolute; top: 5px; right: 5px; font-size: 10px; color: #fff; background: rgba(178, 4, 11, 0.8); padding: 1px 3px; transform: rotate(10deg); z-index: 2;">☠ PRIORITY_ALPHA</span>
+            <img src="johnny.JPG" alt="Johnny Silverhand">
+        </div>
+
+        <div class="wanted-data" style="font-size: 14px; border-top: 1px dashed #440000; padding-top: 8px;">
+            <p><span class="label-red">ID:</span> J.SILVERHAND_B0A</p>
+            <p><span class="label-red">CLASS:</span> ROCKERBOY / TERRORIST</p>
+            <p><span class="label-red">CRIME:</span> NUKED_ARASAKA_TOWER</p>
+        </div>
+
+        <div style="margin-top: 10px; border-top: 2px solid #440000; padding-top: 8px; display: flex; justify-content: space-between;">
+            <span>REWARD:</span>
+            <span style="color: #fff; text-shadow: 0 0 5px #B2040B;">$ 100,000,000 EDD</span>
+        </div>
+    </div>
+</div>
+        <div class="window" style="top: 80px; left: 80px; width: 220px;">
+            <div class="title-bar">
+                <span>STATUS.EXE</span>
+                <div class="close-button">X</div>
+            </div>
+            <div class="window-content">
+                <p>> USER: AMACDOG</p>
+                <p>> ROLE: ADMIN</p>
+                <p>> STATUS: ONLINE</p>
+            </div>
+        </div>
+        <div class="window" style="top: 70px; left: 250px; width: 370px;">
+            <div class="title-bar">
+                <span>AUDIO_PLAYER.EXE</span>
+                <div class="close-button">X</div>
+            </div>
+            <div class="window-content player-layout">
+                <div class="album-cover">
+                    <img src="Samurai.webp" alt="Neon Cover">
+                </div>
+                <div class="track-info">
+                    <p style="color: #B2040B; font-size: 16px; margin: 0 0 2px 0;">PLAYING:</p>
+                    <p style="color: #ffffff; margin: 0; white-space: nowrap; overflow: hidden;">The_Ballad_Of_Buck_Ravers.mp3</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="player-controls">
+                        <span>[<<]</span> <span>PAUSE</span> <span>[>>]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-auth-window">
+            <div class="auth-title">USER_ID</div>
+            <div class="auth-content">
+                <div class="avatar-border">
+                    <img src="me.png" alt="Cass">
+                </div>
+                <div class="auth-status">
+                    [[ <span style="color: #fff;">CASS</span> ]]
+                    <br>
+                    <span style="font-size: 10px; color: #00ff00;">AUTHORIZED</span>
+                </div>
+            </div>
+        </div>
+<div class="expedition-panel">
+    <div class="expedition-header">
+        <span>MISSION_CLOCK</span>
+        <span>v33.0</span>
+    </div>
+    <div class="expedition-content">
+        <div class="cycle-label">CURRENT_CYCLE</div>
+        <div class="cycle-number">33</div>
+        <div style="font-size: 14px;">STATUS: <span style="color: #fff;">ACTIVE</span></div>
+        
+        <div class="time-bar">
+            <div class="time-fill"></div>
+        </div>
+        <p style="font-size: 10px; margin-top: 10px; opacity: 0.5;">"For those who come after..."</p>
+    </div>
+</div>
+<div class="lyric-block">
+    <div class="log-entry"><span class="log-time">[00:00:01]</span><span class="log-crit">KERNEL</span> boot_sequence: lonely_day.sh</div>
+    
+    <div class="log-entry" style="opacity: 0.5;"><span class="log-time">[00:00:05]</span> [DEBUG] allocating_memory_blocks: 0xDEADBEEF</div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:00:10]</span> [ERROR] Such a lonely_day.exe<br>
+        <span class="log-time">[00:00:11]</span> [ERROR] And it's mine.log<br>
+        <span class="log-time">[00:00:12]</span> [CRITICAL] The loneliest day of my_life.dir
+    </div>
+
+    <div class="log-entry"><span class="log-time">[00:00:15]</span> [MONITOR] heart_rate: null // pulse: undetected</div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:00:20]</span> [ERROR] Such a lonely_day.exe<br>
+        <span class="log-time">[00:00:21]</span> [ERROR] It's a day that I'm glad I survived.bat
+    </div>
+
+    <div class="log-entry" style="opacity: 0.4;">$ ssh guest@external_world --connect_timeout 0</div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:00:35]</span> [TRACE] 0x7FF0: If you go.exe<br>
+        <span class="log-time">[00:00:36]</span> [TRACE] 0x7FF1: I wanna go with you.link<br>
+        <span class="log-time">[00:00:37]</span> [TRACE] 0x7FF2: If you die.void<br>
+        <span class="log-time">[00:00:38]</span> [TRACE] 0x7FF3: I wanna die with you.null
+    </div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:00:50]</span> [MEMORY_DUMP] Take your hand.ptr<br>
+        <span class="log-time">[00:00:52]</span> [MEMORY_DUMP] And walk away.exit
+    </div>
+
+    <div class="log-entry" style="opacity: 0.6;">
+        $ ping -t consciousness.sys<br>
+        Request timeout. Code: 404<br>
+        $ ping -t consciousness.sys<br>
+        Request timeout. Code: 404<br>
+        $ tracert /dev/heart
+    </div>
+
+    <div class="log-entry"><span class="log-time">[00:01:05]</span> [BUFFER_OVERFLOW] emotional_payload_too_large</div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:01:20]</span> [ERROR] Such a lonely_day.exe<br>
+        <span class="log-time">[00:01:21]</span> [ERROR] And it's mine.log<br>
+        <span class="log-time">[00:01:22]</span> [CRITICAL] The loneliest day of my_life.dir
+    </div>
+
+    <div class="log-entry" style="opacity: 0.5;">$ access_denied: /root/happiness/permission_not_found</div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:01:45]</span> [TRACE] 0x8FF0: If you go.exe<br>
+        <span class="log-time">[00:01:46]</span> [TRACE] 0x8FF1: I wanna go with you.link<br>
+        <span class="log-time">[00:01:47]</span> [TRACE] 0x8FF2: If you die.void<br>
+        <span class="log-time">[00:01:48]</span> [TRACE] 0x8FF3: I wanna die with you.null
+    </div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:02:10]</span> [FATAL] Such a lonely_day.exe<br>
+        <span class="log-time">[00:02:11]</span> [FATAL] And it's mine.log<br>
+        <span class="log-time">[00:02:12]</span> [FATAL] It's a day that I'm glad I survived.bat
+    </div>
+
+    <div class="log-entry" style="color: #fff; opacity: 0.3;">while(lonely_day) { repeat(suffering); }</div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:02:20]</span> [FATAL] The loneliest day of my_life.dir<br>
+        <span class="log-time">[00:02:22]</span> [FATAL] The loneliest day of my_life.dir<br>
+        <span class="log-time">[00:02:25]</span> [FATAL] The loneliest day of my_life.dir
+    </div>
+
+    <div class="log-entry"><span class="log-time">[00:02:35]</span> [CLEANUP] purging_cached_hope... done.</div>
+
+    <div class="log-entry">
+        <span class="log-time">[00:02:40]</span> [SYSTEM] chmod 000 /feelings<br>
+        <span class="log-time">[00:02:41]</span> [SYSTEM] rm -rf /memories/mine
+    </div>
+
+    <div class="log-entry" style="border: none;">
+        <span class="log-crit">HALT</span> sequence_complete.<br>
+        <span class="log-time">[00:03:00]</span> EOF reached. System on standby.
+    </div>
+</div>
+<div class="cyberpunk-poster-window">
+    <div class="poster-header">
+        <span>ASSET_VIEWER</span>
+        <span>ID: #CP77</span>
+    </div>
+    <div class="poster-content">
+        <div class="poster-frame">
+            <img src="cyberpunk.jpg" alt="Cyberpunk Poster">
+        </div>
+        <div class="poster-metadata">
+            <div class="metadata-line">FILE: <span>NIGHT_CITY_PROMO.DAT</span></div>
+            <div class="metadata-line">SOURCE: <span style="color: #ff0000;">ARASAKA_INTERNAL</span></div>
+            <div class="metadata-line">TYPE: <span>DECRYPTED_IMAGE</span></div>
+            <div class="metadata-line" style="font-size: 10px; opacity: 0.6; margin-top: 5px;">
+                // [WARNING:AUTHORIZED_ACCESS_ONLY]
+            </div>
+        </div>
+    </div>
+</div>
+<div class="renoir-archive">
+    <div class="renoir-header">ART_ARCHIVE // RENOIR</div>
+    <div class="renoir-content">
+        <div class="renoir-frame">
+            <img src="Renoir.jpg" alt="Pierre-Auguste Renoir">
+        </div>
+        <div class="renoir-quote">
+            "Live keep forcing cruel choices."
+        </div>
+        <div class="renoir-author">— P. AUGUSTE RENOIR</div>
+    </div>
+</div>
+<div class="arasaka-popup">
+    <div class="arasaka-header">
+        <span>TACTICAL_MAP_v0.88</span>
+        <span>[ TARGET: LOCKED ]</span>
+    </div>
+    <div class="arasaka-content">
+        <div class="arasaka-frame">
+            <img src="arasaka.jpg" alt="Arasaka Tower">
+            <div class="target-overlay"></div>
+        </div>
+        <div class="arasaka-footer">
+            <div>OBJ: <span style="color: #fff;">ARASAKA_HQ</span></div>
+            <div>SECTOR: <span style="color: #fff;">01_NIGHT_CITY</span></div>
+        </div>
+    </div>
+</div>
+<div class="seven-data-window">
+    <div class="seven-image-box">
+        <img src="seven.jpg" alt="Seven Deadlock">
+    </div>
+    <div class="seven-command-line">
+        > EXECUTE: "Run while you still can"
+    </div>
+    <div class="seven-tech-footer">
+        <div>ID: #DEADLOCK_7</div>
+        <div>STATUS: <span style="color: #fff;">STANDBY</span></div>
+        <div>ENERGY: <span style="color: #fff;">98.4%</span></div>
+    </div>
+</div><div class="frase-block">
+    <div class="frase-header">FILE: SOAD_HIGHAWAY_SONG.TXT</div>
+    <div class="frase-line">// Friction,lines,bumps </div>
+    <div class="frase-line">// The highaway song complete</div>
+    <div class="frase-line">// The signs are all turning right </div>
+    <div class="frase-line">// Do you want me to try</div>
+    <div class="frase-line" style="opacity: 0.3;">[SYSTEM_LOG: END_OF_FILE]</div>
+</div>
+<div class="laufey-code-player">
+    <div class="window-header">
+        <span>AUDIO_DECODER // LAUFEY v.START</span>
+        <div class="window-controls">
+            <span>X</span>
+        </div>
+    </div>
+    <div class="turntable-frame">
+        <div class="turntable-code-base">
+            <div class="platter">
+                <div class="heart-vinyl"></div>
+            </div>
+            <div class="tonearm"></div>
+        </div>
+    </div>
+    <div class="laufey-info">
+        <div class="track-name">From the start</div>
+        <div class="artist-name">Laufey</div>
+        <div class="playback-status">
+            STATUS: <span style="color: #fff;">SENTIMENTAL_LOOP</span>
+        </div>
+    </div>
+</div>
+<div class="jp-background-log">
+    <div class="jp-log-line">[システムログ] ARASAKA_NET_v4</div>
+    <div class="jp-log-line">警告：未認可のアクセスを検出</div>
+    <div class="jp-log-line">メモリキャッシュ：クリア中...</div>
+    <div class="jp-log-line">-----------------------</div>
+    <div class="jp-log-line">ターゲット：ナイトシティ</div>
+    <div class="jp-log-line">ステータス：監視中 [LOCKED]</div>
+    <div class="jp-log-line">データ同期：98.4% 完了</div>
+    <div class="jp-log-line">-----------------------</div>
+    <div class="jp-log-line">>>> 実行：サブネット・スキャン</div>
+    <div class="jp-log-line">暗号化キー：再構築中 [DONE]</div>
+</div>
+<div class="skull-window">
+    <div class="skull-header">
+        <span>TACTICAL_VIEWER // NC_DATA_LOG</span>
+        <span>[X]</span>
+    </div>
+
+    <div class="skull-content">
+        <img src="ASCII.jpg" alt="Pixel Art Turntable" class="tactical-image">
+    </div>
+
+    <div class="skull-footer">
+        <div style="background: #444; color: #000; font-weight: bold; font-size: 14px; padding: 2px 5px; display: flex; justify-content: space-between;">
+            <span>-UUU:**--F1</span>
+            <span>tactical_feed.png</span>
+        </div>
+    </div>
+    <div class="sushi-menu-window">
+    <div class="sushi-header">
+        <span>SUSHI_VENDOR_V.5.0</span>
+        <span>ナイトシティ</span>
+    </div>
+    <div class="sushi-content">
+        <div style="text-align: center; color: #B2040B; font-size: 14px; margin-bottom: 15px; border: 1px solid #B2040B; padding: 2px;">
+            -- ARASAKA PREMIUM SELECTION --
+        </div>
+
+        <div class="sushi-item">
+            <div>
+                <span class="sushi-name">HOT_ROLL</span>
+                <span class="sushi-jp">サーモン握り [RAW_DATA]</span>
+            </div>
+            <span class="sushi-price">E$ 45</span>
+        </div>
+
+        <div class="sushi-item">
+            <div>
+                <span class="sushi-name">URAMAKIS_SALMON</span>
+                <span class="sushi-jp">鉄火巻き [ENCRYPTED]</span>
+            </div>
+            <span class="sushi-price">E$ 38</span>
+        </div>
+
+
+        <div class="sushi-item">
+            <div>
+                <span class="sushi-name">HOSSOMAKIS_SALMON</span>
+                <span class="sushi-jp">人工ウナギ [VIRTUAL]</span>
+            </div>
+            <span class="sushi-price">E$ 25</span>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 12px; color: #666; text-align: center; border-top: 1px double #444; padding-top: 10px;">
+            AUTHENTIC_FLAVOR_EMULATION_ACTIVE<br>
+            <span style="color: #B2040B;">ACCESS_GRANTED: USER_AMACDOG</span>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
